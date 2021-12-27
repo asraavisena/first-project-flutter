@@ -16,9 +16,6 @@ class Quiz extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text(
-          'You have pushed the button this many times:',
-        ),
         Question(questions[questionIndex]['questionText'] as String),
         // SEND ANSWERQUESTION FUNCTION WITHOUT PARENTHESES
         // IT IS LIKE CALLBACK IN  JAVASCRIPT
