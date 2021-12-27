@@ -1,6 +1,7 @@
+import 'package:first_flutter_app/result.dart';
 import 'package:flutter/material.dart';
-import './question.dart';
-import './answer.dart';
+import './quiz.dart';
+import './result.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,7 +33,45 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var questionIndex = 0;
+  var _totalScore = 0;
+  // ! OR CHANGE INTO FINAL
+  static const _questions = [
+    {
+      'questionText': 'What\'s is your favourite color?',
+      'answers': [
+        {'text': 'Black', 'score': 1},
+        {'text': 'Red', 'score': 4},
+        {'text': 'Green', 'score': 9},
+        {'text': 'Blue', 'score': 10}
+      ]
+    },
+    {
+      'questionText': 'What\'s is your favourite animal?',
+      'answers': [
+        {'text': 'Cat', 'score': 7},
+        {'text': 'Rabbit', 'score': 9},
+        {'text': 'Cow', 'score': 5},
+        {'text': 'Goat', 'score': 2}
+      ]
+    },
+    {
+      'questionText': 'What\'s is My Name',
+      'answers': [
+        {'text': 'Asra', 'score': 10},
+        {'text': 'Avisena', 'score': 3},
+        {'text': 'Asra Avisena', 'score': 6},
+        {'text': 'Ovi', 'score': 8}
+      ]
+    },
+  ];
   int _counter = 0;
+
+  void _resetQuiz() {
+    setState(() {
+      questionIndex = 0;
+      _totalScore = 0;
+    });
+  }
 
   void _incrementCounter() {
     setState(() {
@@ -40,7 +79,13 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _answerQuestion() {
+  void _answerQuestion(int score) {
+    _totalScore = _totalScore + score;
+    if (questionIndex < _questions.length) {
+      print('We have more question');
+    } else {
+      print('We have no more question');
+    }
     setState(() {
       questionIndex = questionIndex + 1;
     });
@@ -50,46 +95,25 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     // lists
-    // var questions = [
+    // var _questions = [
     //   'What\s is your favourite colour?',
     //   'What\s is your favourite animal?'
     // ];
-    // create map for questions
+    // create map for _questions
     // a list can have a const so the list can not be changed
-    const questions = [
-      {
-        'questionText': 'What\'s is your favourite color?',
-        'answers': ['Black', 'Red', 'Green', 'Blue']
-      },
-      {
-        'questionText': 'What\'s is your favourite animal?',
-        'answers': ['Cat', 'Rabbit', 'Cow', 'Goat']
-      },
-      {
-        'questionText': 'What\'s is My Name',
-        'answers': ['Asra', 'Avisena', 'Asra Avisena', 'Ovi']
-      },
-    ];
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Question(questions[questionIndex]['questionText'].toString()),
-            // SEND ANSWERQUESTION FUNCTION WITHOUT PARENTHESES
-            // IT IS LIKE CALLBACK IN  JAVASCRIPT
-            ...(questions[questionIndex]['answers'] as List<String>)
-                .map((answer) {
-              return Answer(_answerQuestion, answer);
-            }).toList()
-          ],
-        ),
+        child: (questionIndex < _questions.length)
+            ? Quiz(
+                answerQuestion: _answerQuestion,
+                questionIndex: questionIndex,
+                questions: _questions,
+              )
+            : Result(_totalScore, _resetQuiz),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
